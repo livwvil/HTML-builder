@@ -7,6 +7,8 @@ const srcFolderPath = path.resolve(__dirname, './files');
 const dstFolderPath = path.resolve(__dirname, './files-copy');
 
 async function cloneFolder(src, dst) {
+  await fs.rm(dst, { recursive: true });
+
   try {
     await fs.access(dst, constants.F_OK);
   } catch {
