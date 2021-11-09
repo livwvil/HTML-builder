@@ -150,18 +150,20 @@ async function mergeCssFiles(srcFolder, dstFile) {
 // more stupid copypaste -- __ --
 
 async function cloneFolder(src, dst) {
-  fs.rm(dst, () => {
-    fs.readdir(src, { withFileTypes: true }, async (err, data) => {
-      for (const entry of data) {
-        const srcEntryPath = path.resolve(src, entry.name);
-        const dstEntryPath = path.resolve(dst, entry.name);
-        if (entry.isDirectory()) {
-          cloneFolder(srcEntryPath, dstEntryPath);
-        } else {
-          await createFoldersRecursive(dstEntryPath);
-          fs.copyFile(srcEntryPath, dstEntryPath, () => {err && console.log(err);});
-        }
+  try {
+    await fs.promises.rm(dst, { recursive: true });
+  } catch {}
+    
+  fs.readdir(src, { withFileTypes: true }, async (err, data) => {
+    for (const entry of data) {
+      const srcEntryPath = path.resolve(src, entry.name);
+      const dstEntryPath = path.resolve(dst, entry.name);
+      if (entry.isDirectory()) {
+        cloneFolder(srcEntryPath, dstEntryPath);
+      } else {
+        await createFoldersRecursive(dstEntryPath);
+        fs.copyFile(srcEntryPath, dstEntryPath, () => {err && console.log(err);});
       }
-    });
+    }
   });
 }

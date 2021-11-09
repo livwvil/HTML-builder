@@ -3,11 +3,13 @@ const path = require('path');
 const fs = require('fs/promises');
 const { constants } = require('fs');
 
-const srcFolderPath = path.resolve(__dirname, './files');
-const dstFolderPath = path.resolve(__dirname, './files-copy');
+const srcFolderPath = path.resolve(__dirname, 'files');
+const dstFolderPath = path.resolve(__dirname, 'files-copy');
 
 async function cloneFolder(src, dst) {
+  try {
   await fs.rm(dst, { recursive: true });
+  } catch {}
 
   try {
     await fs.access(dst, constants.F_OK);
